@@ -1,0 +1,118 @@
+{
+  "contract_name": "LoanFactory",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "bytes32"
+        }
+      ],
+      "name": "create",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "loans",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "get",
+      "outputs": [
+        {
+          "name": "_name",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "exists",
+      "outputs": [
+        {
+          "name": "_exists",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_name",
+          "type": "bytes32"
+        }
+      ],
+      "name": "LoanCreated",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b6101f48061001f6000396000f300606060405263ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416637368a8ce811461005e57806373b4086b14610076578063c2bc2efc146100a7578063f6a3d24e146100d8575b600080fd5b341561006957600080fd5b61007460043561010b565b005b341561008157600080fd5b610095600160a060020a036004351661015f565b60405190815260200160405180910390f35b34156100b257600080fd5b610095600160a060020a0360043516610171565b60405190815260200160405180910390f35b34156100e357600080fd5b6100f7600160a060020a03600435166101a7565b604051901515815260200160405180910390f35b600160a060020a033316600081815260208190526040908190208390557fbf56a8f9f77bc28fd3bc4cb935a6b29c08847b9320743e6b23a37898f9eef8f39083905190815260200160405180910390a25b50565b60006020819052908152604090205481565b600061017c826101a7565b151561018757600080fd5b50600160a060020a0381166000908152602081905260409020545b919050565b600160a060020a03811660009081526020819052604090205415155b9190505600a165627a7a723058203959ef1faa54caa79283474c03dcf99b161239c02b5c805c79842d17c768b2370029",
+  "networks": {
+    "1509426586238": {
+      "events": {
+        "0xbf56a8f9f77bc28fd3bc4cb935a6b29c08847b9320743e6b23a37898f9eef8f3": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "_address",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "bytes32"
+            }
+          ],
+          "name": "LoanCreated",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x5bf72681901ef9634c56411bc361866a60bc2037",
+      "updated_at": 1509429853611
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1509429853611
+}
