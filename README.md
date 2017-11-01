@@ -1,32 +1,20 @@
 # Lending dApp
 
-Details on the lending dApp
-
-------------------------------------
-
-This project was built on top of the Vue.js truffle box: https://github.com/wespr/truffle-vue
-
-# Vue.js truffle box
-
-A [`truffle box`](http://truffleframework.com/boxes/) to serve as the foundation of any [`Truffle`](http://truffleframework.com) and [`Vue.js`](https://vuejs.org/) dApp. Comes with [`Vue.js`](https://vuejs.org/), [`vue-router`](https://router.vuejs.org/en/), [`Vuex`](https://vuex.vuejs.org/en/intro.html) and [`sass-loader`](https://github.com/webpack-contrib/sass-loader). A minimalist user authentication smart contract is also provided.
-
-## Directory structure
-
-This truffle box is crafted to enforce a clean directory structure.
-
 ## Installation
 
-1. Install [Truffle](http://truffleframework.com) and an Ethereum client - like [EthereumJS TestRPC](https://github.com/ethereumjs/testrpc).
+1. Install [Truffle](http://truffleframework.com) and an Ethereum client - like [EthereumJS TestRPC](https://github.com/ethereumjs/testrpc). Note I couldn't get this to work on our VMs so I installed them directly on the Mac.
 	```
-	npm install -g truffle // Version 3.0.5+ required.
-	npm install -g ethereumjs-testrpc
+	[sudo] npm install -g truffle // Version 3.0.5+ required.
+	[sudo] npm install -g ethereumjs-testrpc
 	```
 
-2. Download this box.
+2. Pull down the repo and install dependancies
 	```
-	truffle unbox wespr/truffle-vue
+	git clone https://github.com/jsaur/lending-dapp
+	npm install
 	```
-3. Launch [`testrpc`](https://github.com/ethereumjs/testrpc).
+
+3. Launch [`testrpc`](https://github.com/ethereumjs/testrpc) in it's own command prompt tab.
 	```
 	testrpc <options>
 	```
@@ -35,7 +23,7 @@ This truffle box is crafted to enforce a clean directory structure.
 	```
 	truffle compile
 	truffle migrate
-	```
+	``` 
 
 4. Run the webpack server for front-end hot reloading. Smart contract changes do not support hot reloading for now.
 	```
@@ -66,6 +54,40 @@ To build the application for production, use the build command. A production bui
 npm run build
 ```
 
-## Issues
+## Metamask
 
-Please send any bug issues or proposal for improvement to [Issues](https://github.com/wespr/truffle-vue/issues).
+1. Install Metamask in your browser: https://metamask.io/
+
+2. Change network to: Localhost 8545
+
+3. Import address based on private key, using one of the keys generated initially by testrpc
+
+
+## Mist
+
+1. Launch Mist against your private network. Need to download it for your Mac first. Install location may vary.
+	```
+	cd /Volumes/Macintosh HD/Applications/Mist.app/Contents/MacOS
+	./Mist --rpc localhost:8545
+	```
+2. Add contract
+	The address and name are created when running truffle migrate
+	The json interface can be found under build/contracts, the section under "abi"
+
+
+## Possible error resolutions
+
+1. If you're getting npm errors try:
+	```
+	npm update --scripts-prepend-node-path=auto
+	```
+
+2. If you're getting 'out of gas' errors increase the gas limit on testrpc
+	```
+	testrpc --gasLimit 50000000
+	```
+
+3. If you're getting 'gas limit exceed' errors increase the gas in truffle.js
+	```
+	gas: 460000000
+	```

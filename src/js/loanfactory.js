@@ -51,6 +51,21 @@ const LoanFactory = {
         reject(err)
       })
     })
+  },
+
+  get: function (address) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.get.call(
+        address || window.web3.eth.defaultAccount,
+        {from: window.web3.eth.accounts[0]}
+      ).then(name => {
+        resolve(window.web3.toUtf8(name))
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

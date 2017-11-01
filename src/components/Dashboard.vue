@@ -26,12 +26,16 @@ export default {
   },
   beforeCreate: function () {
     LoanFactory.init().then(() => {
+      let self = this
       LoanFactory.exists(window.web3.eth.accounts[0]).then((exists) => {
-        if (exists) {
-         // Users.authenticate().then(pseudo => {
-         //   this.pseudo = pseudo
-         // })
-        }
+        // For some reason exists is returning false when it should return true
+        // if (exists) {
+        console.log(exists)
+        LoanFactory.get(window.web3.eth.accounts[0]).then(name => {
+          self.name = name
+          console.log(name)
+        })
+        // }
       })
     }).catch(err => {
       console.log(err)
