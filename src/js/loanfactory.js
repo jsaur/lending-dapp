@@ -23,45 +23,45 @@ const LoanFactory = {
     })
   },
 
-  exists: function (address) {
+  loanCount: function () {
     let self = this
 
     return new Promise((resolve, reject) => {
       self.instance.exists.call(
-        address || window.web3.eth.defaultAccount,
         {from: window.web3.eth.accounts[0]}
-      ).then(exists => {
-        resolve(exists)
+      ).then(loanCount => {
+        resolve(loanCount)
       }).catch(err => {
         reject(err)
       })
     })
   },
 
-  create: function (name) {
-    let self = this
-
-    return new Promise((resolve, reject) => {
-      self.instance.create(
-        name,
-        {from: window.web3.eth.accounts[0]}
-      ).then(tx => {
-        resolve(tx)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-
-  get: function (address) {
+  getLoanForBorrower: function (address) {
     let self = this
 
     return new Promise((resolve, reject) => {
       self.instance.get.call(
         address || window.web3.eth.defaultAccount,
         {from: window.web3.eth.accounts[0]}
-      ).then(name => {
-        resolve(window.web3.toUtf8(name))
+      ).then(loanAddress => {
+        resolve(loanAddress)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  create: function (name) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.create(
+        loanAmountInEthers,
+        repaymentDurationInDays
+        {from: window.web3.eth.accounts[0]}
+      ).then(tx => {
+        resolve(tx)
       }).catch(err => {
         reject(err)
       })

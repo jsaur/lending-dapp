@@ -1,23 +1,40 @@
 pragma solidity ^0.4.15;
+import "./LoanContract.sol";
 
 contract LoanFactory {
 
-  mapping(address => bytes32) public loans;
+    address[] public loans;
+    address[] public borrowers; //may not be needed
+    mapping(address => address) public borrowerLoanIndex;
 
-  event LoanCreated(address indexed _address, bytes32 _name);
+    event LoanCreated(address loanAddress, address borrowerAddress);
+    
+    function loanCount() public view returns(uint256 _loanCount) {
+        return loans.length;
+    }
+  
+    // Gets the loan contract address for the given borrower address
+    function getLoanForBorrower (address _borrowerAddress) public view returns(address _loanAddress) {
+        return (borrowerLoanIndex[_borrowerAddress]);
+    }
 
-  function exists (address _address) public constant returns (bool _exists) {
-    return (loans[_address] != bytes32(0));
-  }
-
-  function create (bytes32 _name) public {
-    loans[msg.sender] = _name ;
-    LoanCreated(msg.sender, _name);
-  }
-
-  function get (address _address) public constant returns(bytes32 _name) {
-    require(exists(_address));
-    return (loans[_address]);
-  }
-
+    // Creates a new loan contract with the data specified and adds it to the centralized loan repo
+    function create (
+        uint _loanAmountInEthers,
+        uint _repaymentDurationInDays
+    ) public returns(address _loanAddress) {
+        address borrowerAddress = msg.sender;
+        uint fundRaisingDurationInDays = 30; //default to 30 for now
+        address newLoanContract = new LoanContract(
+            borrowerAddress, 
+            _loanAmountInEthers, 
+            fundRaisingDurationInDays, 
+            _repaymentDurationInDays
+        );
+        loans.push(newLoanContract);
+        borrowers.push(borrowerAddress);
+        borrowerLoanIndex[borrowerAddress] = newLoanContract;
+        LoanCreated(newLoanContract, borrowerAddress);
+        return newLoanContract;
+    }
 }

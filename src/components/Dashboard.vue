@@ -4,7 +4,9 @@
     <div v-if="loanExists">
       Welcome {{ name }}.
     </div>
-    <div v-else>Create a loan <router-link to="/createloan">here</router-link>.</div>
+    <div v-else>
+      Create a loan <router-link to="/createloan">here</router-link>.
+    </div>
   </div>
 </template>
 
