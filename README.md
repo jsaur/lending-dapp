@@ -82,12 +82,12 @@ npm run build
 	npm update --scripts-prepend-node-path=auto
 	```
 
-2. If you're getting 'out of gas' errors increase the gas limit on testrpc
-	```
-	testrpc --gasLimit 50000000
-	```
-
-3. If you're getting 'gas limit exceed' errors increase the gas in truffle.js
+2. If you're getting 'out of gas' errors, increase the gas in truffle.js 
 	```
 	gas: 460000000
+	```
+
+3. If you're getting 'gas limit exceed' errors, increase the gas limit on testrpc
+	```
+	testrpc --gasLimit 50000000
 	```
