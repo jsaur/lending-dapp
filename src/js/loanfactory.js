@@ -52,13 +52,15 @@ const LoanFactory = {
     })
   },
 
-  create: function (loanAmountInEthers, repaymentDurationInDays) {
+  create: function (loanAmountInEthers, repaymentDurationInDays, name, use) {
     let self = this
 
     return new Promise((resolve, reject) => {
       self.instance.create(
         loanAmountInEthers,
         repaymentDurationInDays,
+        name,
+        use,
         {from: window.web3.eth.accounts[0]}
       ).then(tx => {
         resolve(tx)

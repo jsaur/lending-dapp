@@ -62,6 +62,9 @@ npm run build
 
 3. Import address based on private key, using one of the keys generated initially by testrpc
 
+## Browser solidity
+
+I find that writing, compiling and testing solidity smart contracts is easiest using: https://ethereum.github.io/browser-solidity/
 
 ## Mist
 
@@ -70,10 +73,12 @@ npm run build
 	cd /Volumes/Macintosh HD/Applications/Mist.app/Contents/MacOS
 	./Mist --rpc localhost:8545
 	```
+
 2. Add contract
 	The address and name are created when running truffle migrate
 	The json interface can be found under build/contracts, the section under "abi"
 
+Note: I've found Mist on testrpc to only be useful for reads - writes fail with a "_signAndSendTransaction not supported" error that seems to be an outstanding Mist issue.
 
 ## Possible error resolutions
 
@@ -91,3 +96,12 @@ npm run build
 	```
 	testrpc --gasLimit 50000000
 	```
+
+4. If you're getting 'invalid opt code' errors, try starting over
+	```
+	truffle compile
+	truffle migrate --reset
+	```
+
+5. If you're getting javascript errors when interacting with you contracts, double check the 'abi' section of your contract json in /build/contracts. Sometimes truffle compile doesn't update these properly and you need to manually make the input/output arguements match what's actually in your solidity contracts
+

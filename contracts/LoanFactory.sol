@@ -21,7 +21,9 @@ contract LoanFactory {
     // Creates a new loan contract with the data specified and adds it to the centralized loan repo
     function create (
         uint _loanAmountInEthers,
-        uint _repaymentDurationInDays
+        uint _repaymentDurationInDays,
+        string _name,
+        string _use
     ) public returns(address _loanAddress) {
         address borrowerAddress = msg.sender;
         uint fundRaisingDurationInDays = 30; //default to 30 for now
@@ -29,7 +31,9 @@ contract LoanFactory {
             borrowerAddress, 
             _loanAmountInEthers, 
             fundRaisingDurationInDays, 
-            _repaymentDurationInDays
+            _repaymentDurationInDays,
+            _name,
+            _use
         );
         loans.push(newLoanContract);
         borrowers.push(borrowerAddress);

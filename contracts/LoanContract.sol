@@ -1,9 +1,6 @@
 pragma solidity ^0.4.15;
-/* 
-    This contract has a minimum lending amount of 0.5 ether. The lent amount can be anything over that.
-    A lender can lend less, if it's all that's required to fully fund a loan. The borrower can repay
-    any amount. There is some extra logic on the last repayment to make sure that everyone gets 
-    fully repaid.
+/*
+    A simple loan contract which allows lenders to lend and borrowers to repay
 */
 contract LoanContract {
     //Constructor vars
@@ -11,12 +8,12 @@ contract LoanContract {
     uint public loanAmount;
     uint public fundRaisingDeadline;
     uint public repaymentDeadline;
+    string public name;
+    string public use;
     
     //Useful vars
-    uint public numLenders;
     uint public amountRaised;
     uint public amountRepaid;
-    uint public minimumLendAmount = 500000000000000000;
     /* Since solidity doesn't allow iterating over mapping, we need 2 data structures to represent lender accounts */
     address[] public lenderAddresses;
     mapping(address => LenderAccount) public lenderAccounts;
@@ -25,6 +22,7 @@ contract LoanContract {
     struct LenderAccount {
         uint amountLent;
         uint amountRepaid;
+        uint amountWithdrawn;
     }
     
     //Events
@@ -33,6 +31,7 @@ contract LoanContract {
     event RepaidByBorrower(address addr, uint amount);
     event RepaidToLender(address addr, uint amount);
     event SentBack(address addr, uint amount);
+    event LenderWithdrew(address addr, uint amount);
     event LoanFunded();
     event LoanExpired();
     event LoanRepaid();
@@ -40,44 +39,30 @@ contract LoanContract {
     // Constructor
     function LoanContract(
         address _borrowerAddress, 
-        uint loanAmountInEthers,
-        uint fundRaisingDurationInDays,
-        uint repaymentDurationInDays 
+        uint _loanAmountInEthers,
+        uint _fundRaisingDurationInDays,
+        uint _repaymentDurationInDays,
+        string _name,
+        string _use
     ) public {
         borrowerAddress = _borrowerAddress;
-        loanAmount = loanAmountInEthers * 1 ether;
-        fundRaisingDeadline = now + fundRaisingDurationInDays * 1 days;
-        repaymentDeadline = fundRaisingDeadline + repaymentDurationInDays * 1 days;
-    }
-
-    // To keep things simple, the default function handles all logic for both lenders and borrowers
-    function() payable public {
-        if (currentState == State.raising) {
-            lend();
-        } else if (currentState == State.repaying) {
-            repay();
-        } else {
-            revert();
-        }
+        loanAmount = _loanAmountInEthers * 1 ether;
+        fundRaisingDeadline = now + _fundRaisingDurationInDays * 1 days;
+        repaymentDeadline = fundRaisingDeadline + _repaymentDurationInDays * 1 days;
+        name = _name;
+        use = _use;
     }
     
     // Lender sends wei to the contract, we store how much they lent
-    // This is a public function that can be accessed by a 
     function lend() payable public {
-        // Don't allow borrowers to lend
+        // Don't allow borrowers to lend, or allow overfunding
         require(msg.sender != borrowerAddress);
-       
-        // Don't allow overfunding
         require(msg.value <= amountLeftToFund());
-        
-        // Don't allow lending less than the minimum, unless it's exactly what's needed to fund the loan
-        require(msg.value >= minimumLendAmount || msg.value == amountLeftToFund());
         
         // Handle lender lending twice
         if (lenderAccounts[msg.sender].amountLent == 0) {
-            numLenders++;
             lenderAddresses.push(msg.sender);
-            lenderAccounts[msg.sender] = LenderAccount(msg.value, 0);
+            lenderAccounts[msg.sender] = LenderAccount(msg.value, 0, 0);
         } else {
             lenderAccounts[msg.sender].amountLent += msg.value;
         }
@@ -88,19 +73,28 @@ contract LoanContract {
         checkLoanFunded();
     }
     
-    // Disburse to borrowers account, and move to repaying
-    // Note the last lender pays the gas on this but it isn't very expensive)
+    // If we have raised the full loan amount, then transition to funded
     function checkLoanFunded() private {
         if (amountRaised >= loanAmount) {
+            currentState = State.funded;
             LoanFunded();
-            if (borrowerAddress.send(amountRaised)) {
-                currentState = State.repaying;
-                DisbursedToBorrower(borrowerAddress, amountRaised);
-            } //@todo error case?
         }
     }
     
-    // Borrower sends wei to the contract, we disburse to all the lenders
+    // The recommended pattern for disbursals is to have the borrower withdraw
+    function borrowerWithdraw() public {
+         // Only borrowers can withdraw, and only in the funded state
+        require(msg.sender == borrowerAddress);
+        require(currentState == State.funded);
+        
+        if (amountRaised > 0) {
+            msg.sender.transfer(amountRaised);
+            DisbursedToBorrower(borrowerAddress, amountRaised);
+            currentState = State.repaying;
+        }
+    }
+    
+    // Borrower sends wei to the contract, we record the amount repaid
     function repay() payable public {
         // Only borrowers can repay, and can't repay more than the amount left
         require(msg.sender == borrowerAddress);
@@ -116,11 +110,9 @@ contract LoanContract {
             address currentLender = lenderAddresses[i];
             uint amountForLender = getAmountForLender(amountToDistribute, lenderAccounts[currentLender]);
             if (amountForLender > 0) {
-                if (currentLender.send(amountForLender)) {
-                    RepaidToLender(currentLender, amountForLender);
-                    lenderAccounts[currentLender].amountRepaid += amountForLender;
-                    amountDistributed += amountForLender;
-                } //@todo error case? Perhaps we need an admin withdrawl bucket for unsendable lender repayments
+                RepaidToLender(currentLender, amountForLender);
+                lenderAccounts[currentLender].amountRepaid += amountForLender;
+                amountDistributed += amountForLender;
             }
         }
         
@@ -144,7 +136,35 @@ contract LoanContract {
         }
     }
     
+    // The recommended pattern for lender's to recieve repayments is to have them withdraw
+    function lenderWithdraw() public {
+        uint amountToWithdraw = amountLenderCanWithdraw(msg.sender);
+        if (amountToWithdraw > 0) {
+            msg.sender.transfer(amountToWithdraw);
+            lenderAccounts[msg.sender].amountWithdrawn += amountToWithdraw;
+            LenderWithdrew(msg.sender, amountToWithdraw);
+        }
+    }
+    
+    // Calculates how much the lender can withdraw based on loan state
+    function amountLenderCanWithdraw(address lenderAddr) public view returns (uint) {
+        uint amountCanWithdraw = 0;
+        LenderAccount storage lenderAccount = lenderAccounts[lenderAddr];
+        if (currentState == State.expired) {
+            /* If the loan expired, lenders can withdraw their contributed amount*/
+            amountCanWithdraw = lenderAccount.amountLent - lenderAccount.amountWithdrawn;
+        } else if (currentState == State.repaying || currentState == State.repaid) {
+            /* If the loan is repaying or fully repaid the lenders can withdraw however much has been repaid to them */
+            amountCanWithdraw = lenderAccount.amountRepaid - lenderAccount.amountWithdrawn;
+        }
+        return amountCanWithdraw;
+    }
+    
     /* Useful constant functions */
+    
+    function numLenders() public view returns (uint) {
+        return lenderAddresses.length;
+    }
     
     function amountLeftToFund() public view returns (uint) {
         return loanAmount - amountRaised;
