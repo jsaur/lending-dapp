@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard">
-    <h1>{{ msg }}</h1>
-    <div v-if="loanExists">
-      Welcome {{ name }}.
+    <h1>Welcome to the lending dApp</h1>
+    <div>
+      Current loan count: {{ loanCount }}
     </div>
-    <div v-else>
+    <div>
       Create a loan <router-link to="/createloan">here</router-link>.
     </div>
   </div>
@@ -17,27 +17,16 @@ export default {
   name: 'dashboard',
   data () {
     return {
-      msg: 'Welcome to the lending dApp',
-      name: undefined
+      loanCount: undefined
     }
   },
   computed: {
-    loanExists: function () {
-      return (typeof this.name !== 'undefined')
-    }
   },
   beforeCreate: function () {
     LoanFactory.init().then(() => {
-      let self = this
-      LoanFactory.exists(window.web3.eth.accounts[0]).then((exists) => {
-        // For some reason exists is returning false when it should return true
-        // if (exists) {
-        console.log(exists)
-        LoanFactory.get(window.web3.eth.accounts[0]).then(name => {
-          self.name = name
-          console.log(name)
-        })
-        // }
+      LoanFactory.loanCount().then((loanCount) => {
+        this.loanCount = parseInt(loanCount, 10)
+        console.log(loanCount)
       })
     }).catch(err => {
       console.log(err)

@@ -27,7 +27,7 @@ const LoanFactory = {
     let self = this
 
     return new Promise((resolve, reject) => {
-      self.instance.exists.call(
+      self.instance.loanCount.call(
         {from: window.web3.eth.accounts[0]}
       ).then(loanCount => {
         resolve(loanCount)

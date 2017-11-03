@@ -3,9 +3,13 @@
     <h1>Create loan</h1>
     <div class="form">
       <div class="entry">
+        <label for="loanAmountInEthers">Loan amount in ethers: </label>
+        <input name="loanAmountInEthers" v-model="form.loanAmountInEthers">
+        <br>
+        <label for="repaymentDurationInDays">Repayment duration in days: </label>
+        <input name="repaymentDurationInDays" v-model="form.repaymentDurationInDays">
+        <br>
         <button @click="createloan" name="createloan">Create loan</button>
-        <input name="name" v-model="form.name">
-        <label for="name">Name</label>
       </div>
     </div>
   </section>
@@ -29,8 +33,8 @@
     methods: {
       createloan: function () {
         let self = this
-        if (typeof this.form.name !== 'undefined' && this.form.name !== '') {
-          LoanFactory.create(this.form.name).then(tx => {
+        if (typeof this.form.loanAmountInEthers !== 'undefined' && this.form.loanAmountInEthers !== '') {
+          LoanFactory.create(this.form.loanAmountInEthers, this.form.repaymentDurationInDays).then(tx => {
             console.log(tx)
             self.$router.push('/')
           }).catch(err => {

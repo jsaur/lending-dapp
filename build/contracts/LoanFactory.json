@@ -92,16 +92,6 @@
     {
       "anonymous": false,
       "inputs": [
-        {
-          "indexed": true,
-          "name": "_address",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_name",
-          "type": "bytes32"
-        }
       ],
       "name": "loanCount",
       "type": "function",
@@ -3225,9 +3215,9 @@
     "1509532774245": {
       "events": {},
       "links": {},
-      "address": "0x1a89f22db6025a58e066273f36375da773aa8991"
+      "address": "0x44859dc7feead65974c5d14555ea2ddb0f5bd43f"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-11-02T09:01:50.928Z"
+  "updatedAt": "2017-11-03T07:23:09.688Z"
 }
