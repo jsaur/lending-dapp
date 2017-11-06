@@ -41,8 +41,23 @@ const LoanFactory = {
     let self = this
 
     return new Promise((resolve, reject) => {
-      self.instance.get.call(
+      self.instance.getLoanForBorrower.call(
         address || window.web3.eth.defaultAccount,
+        {from: window.web3.eth.accounts[0]}
+      ).then(loanAddress => {
+        resolve(loanAddress)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+
+  loans: function (index) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.loans.call(
+        index,
         {from: window.web3.eth.accounts[0]}
       ).then(loanAddress => {
         resolve(loanAddress)

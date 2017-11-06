@@ -7,11 +7,14 @@
     <div>
       Create a loan <router-link to="/createloan">here</router-link>.
     </div>
+    <div v-if="loans">
+    </div>
   </div>
 </template>
 
 <script>
 import LoanFactory from '@/js/loanfactory'
+import Loan from '@/js/loan'
 
 export default {
   name: 'dashboard',
@@ -21,12 +24,33 @@ export default {
     }
   },
   computed: {
+    // here's a way we can get all the loans, and some properties off them.
+    // @todo figure out a nice way to display these
+    loans: function () {
+      let loans = []
+      if (this.loanCount > 0) {
+        for (let i = 0; i < this.loanCount; i++) {
+          LoanFactory.loans(i).then((loanAddress) => {
+            Loan.init(loanAddress).then(() => {
+              Loan.loanAmount().then(loanAmount => {
+                loans.push({
+                  address: loanAddress,
+                  amount: parseInt(loanAmount, 10)
+                })
+              })
+            })
+          })
+        }
+      }
+      console.log(loans)
+      return loans
+    }
   },
   beforeCreate: function () {
     LoanFactory.init().then(() => {
       LoanFactory.loanCount().then((loanCount) => {
         this.loanCount = parseInt(loanCount, 10)
-        console.log(loanCount)
+        console.log('loanCount: ' + this.loanCount)
       })
     }).catch(err => {
       console.log(err)

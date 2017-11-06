@@ -258,22 +258,6 @@
     },
     {
       "inputs": [
-        {
-          "name": "_borrowerAddress",
-          "type": "address"
-        },
-        {
-          "name": "loanAmountInEthers",
-          "type": "uint256"
-        },
-        {
-          "name": "fundRaisingDurationInDays",
-          "type": "uint256"
-        },
-        {
-          "name": "repaymentDurationInDays",
-          "type": "uint256"
-        }
       ],
       "payable": false,
       "stateMutability": "view",
