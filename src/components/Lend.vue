@@ -1,11 +1,7 @@
 <template>
-  <div class="dashboard">
-    <h1>Welcome to the lending dApp</h1>
+  <div class="lend">
     <div>
       Current loan count: {{ loanCount }}
-    </div>
-    <div>
-      Create a loan <router-link to="/createloan">here</router-link>.
     </div>
     <div v-if="loans">
     </div>
@@ -17,7 +13,7 @@ import LoanFactory from '@/js/loanfactory'
 import Loan from '@/js/loan'
 
 export default {
-  name: 'dashboard',
+  name: 'lend',
   data () {
     return {
       loanCount: undefined
@@ -25,7 +21,7 @@ export default {
   },
   computed: {
     // here's a way we can get all the loans, and some properties off them.
-    // @todo figure out a nice way to display these
+    // @todo figure out a nice way to display these in the loans div above
     loans: function () {
       let loans = []
       if (this.loanCount > 0) {

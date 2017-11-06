@@ -3,10 +3,10 @@
     <h1>Welcome to the p2p microfinance dApp</h1>
     <h2>Blockchain lending powered by Ethereum</h2>
     <div id="lend-button">
-      <router-link tag="button" to='/dashboard'>LEND</router-link>
+      <router-link tag="button" to='/lend'>LEND</router-link>
     </div>
     <div id="borrow-button">
-      <router-link tag="button" to="/createloan">BORROW</router-link>
+      <router-link tag="button" to="/borrow">BORROW</router-link>
     </div>
 
   </div>
@@ -16,7 +16,7 @@
 <script>
 
 export default {
-  name: 'homepage',
+  name: 'home',
   data () {
     return {
     }
