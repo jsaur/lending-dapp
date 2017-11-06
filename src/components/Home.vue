@@ -1,7 +1,7 @@
 <template>
   <div class="homepage">
-    <h1>Welcome to Kiva 2049</h1>
-    <h2>Funding loans with Ether</h2>
+    <h1>Welcome to the p2p microfinance dApp</h1>
+    <h2>Blockchain lending powered by Ethereum</h2>
     <div id="lend-button">
       <router-link tag="button" to='/dashboard'>LEND</router-link>
     </div>
@@ -14,7 +14,6 @@
 
 
 <script>
-// import LoanFactory from '@/js/loanfactory'
 
 export default {
   name: 'homepage',
