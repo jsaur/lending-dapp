@@ -4,6 +4,11 @@
       Current loan count: {{ loanCount }}
     </div>
     <div v-if="loans">
+      <ul id="loan-list">
+        <li v-for="loan in loans">
+          <a v-bind:href="loan.url">{{loan.name}}</a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -16,30 +21,8 @@ export default {
   name: 'lend',
   data () {
     return {
-      loanCount: undefined
-    }
-  },
-  computed: {
-    // here's a way we can get all the loans, and some properties off them.
-    // @todo figure out a nice way to display these in the loans div above
-    loans: function () {
-      let loans = []
-      if (this.loanCount > 0) {
-        for (let i = 0; i < this.loanCount; i++) {
-          LoanFactory.loans(i).then((loanAddress) => {
-            Loan.init(loanAddress).then(() => {
-              Loan.loanAmount().then(loanAmount => {
-                loans.push({
-                  address: loanAddress,
-                  amount: parseInt(loanAmount, 10)
-                })
-              })
-            })
-          })
-        }
-      }
-      console.log(loans)
-      return loans
+      loanCount: undefined,
+      loans: undefined
     }
   },
   beforeCreate: function () {
@@ -47,6 +30,29 @@ export default {
       LoanFactory.loanCount().then((loanCount) => {
         this.loanCount = parseInt(loanCount, 10)
         console.log('loanCount: ' + this.loanCount)
+
+        // @todo there's probably a better way to iterate over each loan and fetch contract properties
+        this.loans = []
+        if (this.loanCount > 0) {
+          for (let i = 0; i < this.loanCount; i++) {
+            LoanFactory.loans(i).then((loanAddress) => {
+              // @todo make this instantiate a new Loan
+              // right now this can only fetch one property, multiple properties results in fetching them from the wrong contract
+              let loanContract = Loan
+              loanContract.init(loanAddress).then(() => {
+                loanContract.name().then(name => {
+                  let loan = {
+                    address: loanAddress,
+                    url: '/lend/' + loanAddress,
+                    name: name
+                  }
+                  console.log(loan)
+                  this.loans.push(loan)
+                })
+              })
+            })
+          }
+        }
       })
     }).catch(err => {
       console.log(err)
@@ -68,7 +74,6 @@ ul {
 }
 
 li {
-  display: inline-block;
   margin: 0 10px;
 }
 

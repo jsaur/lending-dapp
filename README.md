@@ -92,7 +92,7 @@ Note: I've found Mist on testrpc to only be useful for reads - writes fail with 
 	gas: 460000000
 	```
 
-3. If you're getting 'gas limit exceed' errors, increase the gas limit on testrpc
+3. If you're getting 'Exceeds block gas limit' errors, increase the gas limit on testrpc
 	```
 	testrpc --gasLimit 50000000
 	```

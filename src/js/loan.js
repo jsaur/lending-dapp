@@ -1,13 +1,15 @@
 import contract from 'truffle-contract'
 import LoanContract from '@contracts/LoanContract.json'
 
-const Loan = {
+// This still isn't quite right, but I want a class not a const
+// to enable multiple loan contracts for each loan address
+class Loan {
 
-  contract: null,
+  constructor () {
+    return this
+  }
 
-  instance: null,
-
-  init: function (address) {
+  init (address) {
     let self = this
 
     return new Promise(function (resolve, reject) {
@@ -21,9 +23,9 @@ const Loan = {
         reject(err)
       })
     })
-  },
+  }
 
-  loanAmount: function () {
+  loanAmount () {
     let self = this
 
     return new Promise((resolve, reject) => {
@@ -34,6 +36,18 @@ const Loan = {
       })
     })
   }
+
+  name () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.name.call().then(name => {
+        resolve(name)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
 }
 
-export default Loan
+export default new Loan()
