@@ -6,6 +6,7 @@ contract LoanContract {
     //Constructor vars
     address borrowerAddress;
     uint public loanAmount;
+    uint public repaymentDuration;
     uint public fundRaisingDeadline;
     uint public repaymentDeadline;
     string public name;
@@ -47,6 +48,7 @@ contract LoanContract {
     ) public {
         borrowerAddress = _borrowerAddress;
         loanAmount = _loanAmountInEthers * 1 ether;
+        repaymentDuration = _repaymentDurationInDays;
         fundRaisingDeadline = now + _fundRaisingDurationInDays * 1 days;
         repaymentDeadline = fundRaisingDeadline + _repaymentDurationInDays * 1 days;
         name = _name;

@@ -1,5 +1,5 @@
 <template>
-  <section id='createloan'>
+  <section id='borrow'>
     <h1>Create loan</h1>
     <div class="form">
       <div class="entry">
@@ -25,7 +25,7 @@
   import LoanFactory from '@/js/loanfactory'
 
   export default {
-    name: 'createloan',
+    name: 'borrow',
     data () {
       return {
         form: {

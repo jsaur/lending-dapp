@@ -6,7 +6,7 @@
     <div v-if="loans">
       <ul id="loan-list">
         <li v-for="loan in loans">
-          <a v-bind:href="loan.url">{{loan.name}}</a>
+          <router-link :to="{ name: 'loan', params: { address: loan.address }}">{{loan.name}}</router-link>
         </li>
       </ul>
     </div>
@@ -43,7 +43,7 @@ export default {
                 loanContract.name().then(name => {
                   let loan = {
                     address: loanAddress,
-                    url: '/lend/' + loanAddress,
+                    url: '/loan/' + loanAddress,
                     name: name
                   }
                   console.log(loan)
