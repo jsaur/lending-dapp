@@ -3,6 +3,7 @@
     <div class="general">
       <p>Loan contract address: {{ address }}</p>
       <p>Name: {{ name }}</p>
+      <p>Use: {{ use }}</p>
       <p>Loan amount: {{ loanAmount }} ETH</p>
       <p>Expected last repayent: {{ expectedLastRepayment }}</p>
       <p>Current State: {{ currentState }}</p>
@@ -55,6 +56,7 @@
         address: this.address,
         borrowerAddress: undefined,
         name: undefined,
+        use: undefined,
         currentState: undefined,
         loanAmount: undefined,
         amountRaised: 0,
@@ -97,6 +99,9 @@
 
         Loan.name().then(name => {
           this.name = name
+        })
+        Loan.use().then(use => {
+          this.use = use
         })
         Loan.loanAmount().then(loanAmount => {
           this.loanAmount = parseFloat(loanAmount, 10)

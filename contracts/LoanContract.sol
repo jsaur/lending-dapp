@@ -25,6 +25,12 @@ contract LoanContract {
         uint amountRepaid;
         uint amountWithdrawn;
     }
+    PaymentEntry[] public schedule;
+    PaymentEntry[] public payments;
+    struct PaymentEntry {
+        uint date;
+        uint amount;
+    }
     
     //Events
     event LentToLoan(address addr, uint amount);
@@ -53,6 +59,8 @@ contract LoanContract {
         repaymentDeadline = fundRaisingDeadline + _repaymentDurationInDays * 1 days;
         name = _name;
         use = _use;
+        // For now just do a single scheduled payment at the end
+        schedule.push(PaymentEntry(repaymentDeadline, loanAmount));
     }
     
     // Lender sends wei to the contract, we store how much they lent
@@ -105,6 +113,7 @@ contract LoanContract {
         
         amountRepaid += msg.value;
         RepaidByBorrower(borrowerAddress, msg.value);
+        payments.push(PaymentEntry(now, msg.value));
         
         // Distribute wei evenly to lenders, if there's a remainder we'll distribute at the end
         uint amountToDistribute = msg.value;

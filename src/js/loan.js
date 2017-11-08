@@ -73,6 +73,18 @@ class Loan {
     })
   }
 
+  use () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.use.call().then(use => {
+        resolve(use)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   currentState () {
     let self = this
 
