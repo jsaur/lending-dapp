@@ -1,21 +1,28 @@
 <template>
   <div class="loan">
-    <p>Loan contract address: {{ address }}</p>
-    <p>Name: {{ name }}</p>
-    <p>Loan amount: {{ loanAmount }} ETH</p>
-    <p>Amount raised: {{ amountRaised }} ETH</p>
-    <p>Expected last repayent: {{ expectedLastRepayment }}</p>
-    <div class="lend-button">
-      <label for="lendAmount">Amount to lend (ETH): </label>
-      <input name="lendAmount" v-model="form.lendAmount">
-      <button @click="lendToLoan" name="lendToLoan">Lend to loan</button>
+    <div class="general">
+      <p>Loan contract address: {{ address }}</p>
+      <p>Name: {{ name }}</p>
+      <p>Loan amount: {{ loanAmount }} ETH</p>
+      <p>Amount raised: {{ amountRaised }} ETH</p>
+      <p>Expected last repayent: {{ expectedLastRepayment }}</p>
     </div>
-    <div v-if="hasLent">
-      <br>
-      <p>Thanks for lending!</p>
-      <p>Amount lent: {{ lenderAccount.amountLent }} ETH</p>
-      <p>Amount repaid: {{ lenderAccount.amountRepaid }} ETH</p>
-      <p>Amount withdrawn: {{ lenderAccount.amountWithdrawn }} ETH</p>
+    <div class="borrower" v-if="isBorrower">
+      <p>You are the borrower</p>
+    </div>
+    <div class="lender" v-else>
+      <div class="lend-button">
+        <label for="lendAmount">Amount to lend (ETH): </label>
+        <input name="lendAmount" v-model="form.lendAmount">
+        <button @click="lendToLoan" name="lendToLoan">Lend to loan</button>
+      </div>
+      <div v-if="hasLent">
+        <br>
+        <p>Thanks for lending!</p>
+        <p>Amount lent: {{ lenderAccount.amountLent }} ETH</p>
+        <p>Amount repaid: {{ lenderAccount.amountRepaid }} ETH</p>
+        <p>Amount withdrawn: {{ lenderAccount.amountWithdrawn }} ETH</p>
+      </div>
     </div>
   </div>
 </template>
@@ -28,6 +35,7 @@
     data () {
       return {
         address: this.address,
+        borrowerAddress: undefined,
         name: undefined,
         loanAmount: undefined,
         amountRaised: 0,
@@ -40,9 +48,18 @@
         }
       }
     },
+    computed: {
+      isBorrower: function () {
+        return (this.borrowerAddress === this.address)
+      }
+    },
     beforeCreate () {
       this.address = this.$route.params.address
       Loan.init(this.address).then(() => {
+        // @todo this is giving me an opt code error, not sure why
+        Loan.borrowerAddress().then(borrowerAddress => {
+          this.borrowerAddress = borrowerAddress
+        })
         Loan.name().then(name => {
           this.name = name
         })

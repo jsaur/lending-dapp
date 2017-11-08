@@ -85,6 +85,18 @@ class Loan {
     })
   }
 
+  borrowerAddress () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.borrowerAddress.call().then(borrowerAddress => {
+        resolve(borrowerAddress)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   lenderAccounts (address) {
     let self = this
 

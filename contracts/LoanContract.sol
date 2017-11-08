@@ -4,7 +4,7 @@ pragma solidity ^0.4.15;
 */
 contract LoanContract {
     //Constructor vars
-    address borrowerAddress;
+    address public borrowerAddress;
     uint public loanAmount;
     uint public repaymentDuration;
     uint public fundRaisingDeadline;
