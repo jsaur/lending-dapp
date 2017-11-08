@@ -49,12 +49,37 @@ class Loan {
     })
   }
 
+  amountRepaid () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.amountRepaid.call().then(amountRepaid => {
+        resolve(window.web3.fromWei(amountRepaid))
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   name () {
     let self = this
 
     return new Promise((resolve, reject) => {
       self.instance.name.call().then(name => {
         resolve(name)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  currentState () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.currentState.call().then(currentState => {
+        let states = ['raising', 'funded', 'repaying', 'repaid', 'expired']
+        resolve(states[currentState])
       }).catch(err => {
         reject(err)
       })
@@ -115,6 +140,20 @@ class Loan {
     })
   }
 
+  amountLenderCanWithdraw (address) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.amountLenderCanWithdraw.call(
+        address || window.web3.eth.accounts[0]
+      ).then(amountLenderCanWithdraw => {
+        resolve(parseFloat(window.web3.fromWei(amountLenderCanWithdraw)))
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   lend (amount) {
     let self = this
 
@@ -122,6 +161,49 @@ class Loan {
       self.instance.lend({
         from: window.web3.eth.accounts[0],
         value: window.web3.toWei(amount, 'ether')
+      }).then(tx => {
+        resolve(tx)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  repay (amount) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.repay({
+        from: window.web3.eth.accounts[0],
+        value: window.web3.toWei(amount, 'ether')
+      }).then(tx => {
+        resolve(tx)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  borrowerWithdraw () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.borrowerWithdraw({
+        from: window.web3.eth.accounts[0]
+      }).then(tx => {
+        resolve(tx)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  lenderWithdraw () {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.instance.lenderWithdraw({
+        from: window.web3.eth.accounts[0]
       }).then(tx => {
         resolve(tx)
       }).catch(err => {

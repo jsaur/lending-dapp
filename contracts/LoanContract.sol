@@ -18,7 +18,7 @@ contract LoanContract {
     /* Since solidity doesn't allow iterating over mapping, we need 2 data structures to represent lender accounts */
     address[] public lenderAddresses;
     mapping(address => LenderAccount) public lenderAccounts;
-    enum State {raising, funded, repaying, repaid, expired} //default?
+    enum State {raising, funded, repaying, repaid, expired}
     State public currentState;
     struct LenderAccount {
         uint amountLent;
@@ -90,9 +90,9 @@ contract LoanContract {
         require(currentState == State.funded);
         
         if (amountRaised > 0) {
+            currentState = State.repaying;
             msg.sender.transfer(amountRaised);
             DisbursedToBorrower(borrowerAddress, amountRaised);
-            currentState = State.repaying;
         }
     }
     
@@ -100,6 +100,7 @@ contract LoanContract {
     function repay() payable public {
         // Only borrowers can repay, and can't repay more than the amount left
         require(msg.sender == borrowerAddress);
+        require(currentState == State.repaying);
         require(msg.value <= amountLeftToRepay());
         
         amountRepaid += msg.value;
@@ -142,8 +143,8 @@ contract LoanContract {
     function lenderWithdraw() public {
         uint amountToWithdraw = amountLenderCanWithdraw(msg.sender);
         if (amountToWithdraw > 0) {
-            msg.sender.transfer(amountToWithdraw);
             lenderAccounts[msg.sender].amountWithdrawn += amountToWithdraw;
+            msg.sender.transfer(amountToWithdraw);
             LenderWithdrew(msg.sender, amountToWithdraw);
         }
     }
@@ -160,6 +161,14 @@ contract LoanContract {
             amountCanWithdraw = lenderAccount.amountRepaid - lenderAccount.amountWithdrawn;
         }
         return amountCanWithdraw;
+    }
+
+    // Solidity doesn't support timer calls, so an admin will have to call this
+    function makeExpired() public {
+         if (now >= fundRaisingDeadline && amountRaised < loanAmount) {
+            currentState = State.expired;
+            LoanExpired();
+        }
     }
     
     /* Useful constant functions */
@@ -178,20 +187,5 @@ contract LoanContract {
     
     function isDelinquent() public view returns (bool) {
         return (now >= repaymentDeadline && currentState != State.repaid);
-    }
-    
-    // Anyone can call this, but it will probably be an admin
-    // If the expiration date has passed, send wei back to lenders
-    function makeExpired() public {
-         if (now >= fundRaisingDeadline && currentState != State.expired) {
-            currentState = State.expired;
-            LoanExpired();
-            for (uint i = 0; i < lenderAddresses.length; i++) {
-                address currentLender = lenderAddresses[i];
-                if (currentLender.send(lenderAccounts[currentLender].amountLent)) {
-                    RepaidToLender(currentLender, lenderAccounts[currentLender].amountLent);
-                } //@todo error case?
-            }
-        }
     }
 }
