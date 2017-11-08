@@ -29,7 +29,6 @@ export default {
     LoanFactory.init().then(() => {
       LoanFactory.loanCount().then((loanCount) => {
         this.loanCount = parseInt(loanCount, 10)
-        console.log('loanCount: ' + this.loanCount)
 
         // @todo there's probably a better way to iterate over each loan and fetch contract properties
         this.loans = []
@@ -46,7 +45,6 @@ export default {
                     url: '/loan/' + loanAddress,
                     name: name
                   }
-                  console.log(loan)
                   this.loans.push(loan)
                 })
               })

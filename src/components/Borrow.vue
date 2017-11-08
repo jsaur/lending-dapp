@@ -67,7 +67,6 @@
             console.log(tx)
             // This seems a bit round about, there may be a better way
             this.loanAddress = tx.logs[0].args.loanAddress
-            console.log(this.loanAddress)
           }).catch(err => {
             console.log(err)
           })

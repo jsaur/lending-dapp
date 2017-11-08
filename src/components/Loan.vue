@@ -62,10 +62,15 @@
         repaymentDuration: undefined,
         expectedLastRepayment: undefined,
         hasLent: undefined,
-        lenderAccount: undefined,
-        amountCanWithdraw: undefined,
+        lenderAccount: {
+          amountLent: 0,
+          amountRepaid: 0,
+          amountWithdrawn: 0
+        },
+        amountCanWithdraw: 0,
         form: {
-          lendAmount: undefined
+          lendAmount: undefined,
+          repayAmount: undefined
         }
       }
     },
@@ -99,8 +104,13 @@
         Loan.expectedLastRepayment().then(expectedLastRepayment => {
           this.expectedLastRepayment = new Date(expectedLastRepayment * 1000)
         })
-        this.refreshLendData()
-        this.refreshRepayData()
+
+        // Hack: contracts can take awhile to update their state, there's probably a better way to monitor this, but for now will just run a refresh job on a timer
+        let self = this
+        self.refreshData()
+        window.setInterval(function () {
+          self.refreshData()
+        }, 500)
       })
     },
     methods: {
@@ -110,35 +120,18 @@
         if (this.form.lendAmount > 0) {
           Loan.lend(this.form.lendAmount).then(tx => {
             console.log(tx)
-            self.hasLent = true
-            this.refreshLendData()
-            this.refreshRepayData()
+            self.form.lendAmount = undefined
+            self.refreshData()
           }).catch(err => {
             console.log(err)
           })
         }
       },
-      refreshLendData: function () {
-        // @todo for some reason this still pulls stale values from the contract, need to figure how to force updated values
-        console.log('refreshLendData')
-        Loan.amountRaised().then(amountRaised => {
-          this.amountRaised = parseFloat(amountRaised, 10)
-          console.log(this.amountRaised)
-        })
-        Loan.lenderAccounts().then(lenderAccount => {
-          if (lenderAccount && lenderAccount.amountLent > 0) {
-            this.hasLent = true
-            this.lenderAccount = lenderAccount
-            Loan.amountLenderCanWithdraw().then(amountCanWithdraw => {
-              this.amountCanWithdraw = amountCanWithdraw
-            })
-          }
-        })
-      },
       lenderWithdraw: function () {
+        let self = this
         Loan.lenderWithdraw().then(tx => {
           console.log(tx)
-          this.refreshLendData()
+          self.refreshData()
         }).catch(err => {
           console.log(err)
         })
@@ -146,31 +139,47 @@
 
       // borrower functions
       borrowerWithdraw: function () {
+        let self = this
         Loan.borrowerWithdraw().then(tx => {
           console.log(tx)
-          this.refreshRepayData()
+          self.refreshData()
         }).catch(err => {
           console.log(err)
         })
       },
       repayToLoan: function () {
+        let self = this
         if (this.form.repayAmount > 0) {
           Loan.repay(this.form.repayAmount).then(tx => {
             console.log(tx)
-            this.refreshRepayData()
+            self.form.repayAmount = undefined
+            self.refreshData()
           }).catch(err => {
             console.log(err)
           })
         }
       },
-      refreshRepayData: function () {
-        console.log('refreshRepayData')
+
+      // refresh the vars that change often
+      refreshData: function () {
+        let self = this
         Loan.currentState().then(currentState => {
-          this.currentState = currentState
+          self.currentState = currentState
+        })
+        Loan.amountRaised().then(amountRaised => {
+          self.amountRaised = parseFloat(amountRaised, 10)
         })
         Loan.amountRepaid().then(amountRepaid => {
-          this.amountRepaid = parseFloat(amountRepaid, 10)
-          console.log(this.amountRepaid)
+          self.amountRepaid = parseFloat(amountRepaid, 10)
+        })
+        Loan.lenderAccounts().then(lenderAccount => {
+          if (lenderAccount && lenderAccount.amountLent > 0) {
+            self.lenderAccount = lenderAccount
+            self.hasLent = true
+            Loan.amountLenderCanWithdraw().then(amountCanWithdraw => {
+              self.amountCanWithdraw = amountCanWithdraw
+            })
+          }
         })
       }
     }
