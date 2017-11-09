@@ -60,7 +60,9 @@ npm run build
 
 2. Change network to: Localhost 8545
 
-3. Import address based on private key, using one of the keys generated initially by testrpc
+3. When you started testrpc, it should have printed out a list of available accounts and private keys. Copy one of the private keys.
+
+4. In meta mask, click the circular arrows, then "Import Account", then paste the private key. Now you can spend your test accounts ether.
 
 ## Browser solidity
 
