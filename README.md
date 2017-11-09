@@ -103,5 +103,8 @@ Note: I've found Mist on testrpc to only be useful for reads - writes fail with 
 	truffle migrate --reset
 	```
 
-5. If you're getting javascript errors when interacting with you contracts, double check the 'abi' section of your contract json in /build/contracts. Sometimes truffle compile doesn't update these properly and you need to manually make the input/output arguements match what's actually in your solidity contracts. I've saved a backup of the abi in build/contracts/LoanContract.abi.bak, but this is really just a hack, I probably need to file an issue with truffle.
+5. If you're getting javascript errors when interacting with you contracts, double check the 'abi' section of your contract json in /build/contracts and compare to what the function actually looks like in Solidity. Sometimes truffle compile doesn't update these properly. If you delete all the files in build/contracts and then recompile everything it often fixes it.
+	```
+	npm run truffle migrate --reset --compile-all
+	```
 

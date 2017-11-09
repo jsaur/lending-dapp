@@ -5,6 +5,7 @@
       <p>Name: {{ name }}</p>
       <p>Use: {{ use }}</p>
       <p>Loan amount: {{ loanAmount }} ETH</p>
+      <p>Repayment duration: {{ repaymentDuration }} days</p>
       <p>Expected last repayent: {{ expectedLastRepayment }}</p>
       <p>Current State: {{ currentState }}</p>
       <p v-if="currentState === 'raising'">Amount raised: {{ amountRaised }} ETH</p>
@@ -47,7 +48,6 @@
 <script>
   // @todo break up into vue components: general, borrower and lender
   import Loan from '@/js/loan'
-  import LoanFactory from '@/js/loanfactory'
 
   export default {
     name: 'loan',
@@ -78,25 +78,15 @@
     },
     computed: {
       isBorrower: function () {
-        return (this.borrowerAddress === this.address)
+        return (this.borrowerAddress === window.web3.eth.accounts[0])
       }
     },
     beforeCreate () {
       this.address = this.$route.params.address
       Loan.init(this.address).then(() => {
-        // @todo this is giving me an opt code error, not sure why
-        // Loan.borrowerAddress().then(borrowerAddress => {
-        //  this.borrowerAddress = borrowerAddress
-        // })
-        // Until I can figure out the above issue, just going to use the LoanFactory (lame)
-        LoanFactory.init().then(() => {
-          LoanFactory.getLoanForBorrower().then(borrowerAddress => {
-            if (borrowerAddress && borrowerAddress !== '0x0000000000000000000000000000000000000000') {
-              this.borrowerAddress = borrowerAddress
-            }
-          })
+        Loan.borrowerAddress().then(borrowerAddress => {
+          this.borrowerAddress = borrowerAddress
         })
-
         Loan.name().then(name => {
           this.name = name
         })
@@ -104,10 +94,13 @@
           this.use = use
         })
         Loan.loanAmount().then(loanAmount => {
-          this.loanAmount = parseFloat(loanAmount, 10)
+          this.loanAmount = loanAmount
+        })
+        Loan.repaymentDuration().then(repaymentDuration => {
+          this.repaymentDuration = repaymentDuration
         })
         Loan.expectedLastRepayment().then(expectedLastRepayment => {
-          this.expectedLastRepayment = new Date(expectedLastRepayment * 1000)
+          this.expectedLastRepayment = expectedLastRepayment
         })
 
         // Hack: contracts can take awhile to update their state, there's probably a better way to monitor this, but for now will just run a refresh job on a timer
@@ -172,10 +165,10 @@
           self.currentState = currentState
         })
         Loan.amountRaised().then(amountRaised => {
-          self.amountRaised = parseFloat(amountRaised, 10)
+          self.amountRaised = amountRaised
         })
         Loan.amountRepaid().then(amountRepaid => {
-          self.amountRepaid = parseFloat(amountRepaid, 10)
+          self.amountRepaid = amountRepaid
         })
         Loan.lenderAccounts().then(lenderAccount => {
           if (lenderAccount && lenderAccount.amountLent > 0) {
