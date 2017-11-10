@@ -1,8 +1,8 @@
 <template>
   <div class="currency-convert">
     <h1>
-    {{ dollarAmt }} is dollars
-    {{ ether }} is eth
+    {{ dollarAmt }} dollar is
+    {{ ether }}  ether
 
   </h1>
 
@@ -18,33 +18,30 @@ export default {
   // props: {dollarAmt: 1},
   data () {
     return {
-      dollarAmt: 100,
-      ether: '',
-      posts: [],
-      errors: []
+      dollarAmt: 1,
+      ether: ''
     }
   },
-  // watch : {
-  //   dollar2Ether: function () {
-  //     this.getDollarEthConversion()
-  //   }
-  // },
-  mounted () {
+
+  created () {
     // triggerAjax: function () {
     this.getDollarEthConversion()
+
     // this.
     // }
   },
   methods: {
   // Fetches posts when the component is created.
     getDollarEthConversion: function () {
+      console.log('more messages')
       var vm = this
       axios.get(`https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=ETH`)
       .then((response) => {
         // JSON responses are automatically parsed.
         // this.posts = response.data
-        // console.log(response)
-        vm.ether = response.ETH
+        console.log(response)
+
+        vm.ether = response.data.ETH
       })
       .catch(e => {
         // this.errors.push(e)
