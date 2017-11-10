@@ -1,6 +1,6 @@
 <template>
   <div class="homepage">
-    <h1>Welcome to the p2p microfinance dApp</h1>
+    <h1>Welcome to the Keeeva microfinance dApp</h1>
     <h2>Blockchain lending powered by Ethereum</h2>
     <div id="lend-button">
       <router-link tag="button" to='/lend'>LEND</router-link>

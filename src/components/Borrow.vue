@@ -4,7 +4,7 @@
       <p>Your have a loan! Check it out here:</p>
       <router-link :to="{ name: 'loan', params: { address: loanAddress }}">{{loanAddress}}</router-link>
     </div>
-    <div v-else>
+    <div id="atoms-1-column-layout" class="sg-pattern" v-else>
       <h1>Create loan</h1>
       <div class="form">
         <div class="entry">
