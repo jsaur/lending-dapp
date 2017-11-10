@@ -4,7 +4,6 @@ import Home from '@/components/Home'
 import Lend from '@/components/Lend'
 import Borrow from '@/components/Borrow'
 import Loan from '@/components/Loan'
-import Converter from '@/components/Converter'
 
 Vue.use(Router)
 
@@ -29,11 +28,6 @@ export default new Router({
       path: '/loan/:address',
       name: 'loan',
       component: Loan
-    },
-    {
-      path: '/converter',
-      name: 'currency-convert',
-      component: Converter
     }
   ]
 })

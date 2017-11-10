@@ -34,28 +34,17 @@
     name: 'borrow',
     data () {
       return {
-        loanAddress: undefined,
         form: {
           name: undefined
         }
       }
     },
-    computed: {
-      hasLoan: function () {
-        return (typeof this.loanAddress !== 'undefined')
-      }
-    },
     beforeCreate: function () {
-      LoanFactory.init().then(() => {
-        LoanFactory.getLoanForBorrower().then(loanAddress => {
-          if (loanAddress && loanAddress !== '0x0000000000000000000000000000000000000000') {
-            this.loanAddress = loanAddress
-          }
-        })
-      })
+      LoanFactory.init()
     },
     methods: {
       createloan: function () {
+        let self = this
         if (typeof this.form.loanAmountInEthers !== 'undefined' && this.form.loanAmountInEthers !== '') {
           // @todo more error checking
           LoanFactory.create(
@@ -65,8 +54,7 @@
             this.form.use
           ).then(tx => {
             console.log(tx)
-            // This seems a bit round about, there may be a better way
-            this.loanAddress = tx.logs[0].args.loanAddress
+            self.$router.push('/')
           }).catch(err => {
             console.log(err)
           })
