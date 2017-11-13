@@ -30,7 +30,7 @@ class Loan {
 
     return new Promise((resolve, reject) => {
       self.instance.loanAmount.call().then(loanAmount => {
-        resolve(window.web3.fromWei(loanAmount))
+        resolve(parseFloat(window.web3.fromWei(loanAmount)))
       }).catch(err => {
         reject(err)
       })
@@ -42,7 +42,7 @@ class Loan {
 
     return new Promise((resolve, reject) => {
       self.instance.amountRaised.call().then(amountRaised => {
-        resolve(window.web3.fromWei(amountRaised))
+        resolve(parseFloat(window.web3.fromWei(amountRaised)))
       }).catch(err => {
         reject(err)
       })
@@ -54,7 +54,7 @@ class Loan {
 
     return new Promise((resolve, reject) => {
       self.instance.amountRepaid.call().then(amountRepaid => {
-        resolve(window.web3.fromWei(amountRepaid))
+        resolve(parseFloat(window.web3.fromWei(amountRepaid)))
       }).catch(err => {
         reject(err)
       })
@@ -103,7 +103,7 @@ class Loan {
 
     return new Promise((resolve, reject) => {
       self.instance.repaymentDuration.call().then(repaymentDuration => {
-        resolve(repaymentDuration)
+        resolve(parseFloat(repaymentDuration))
       }).catch(err => {
         reject(err)
       })
@@ -115,7 +115,7 @@ class Loan {
 
     return new Promise((resolve, reject) => {
       self.instance.repaymentDeadline.call().then(expectedLastRepayment => {
-        resolve(expectedLastRepayment)
+        resolve(new Date(expectedLastRepayment * 1000))
       }).catch(err => {
         reject(err)
       })

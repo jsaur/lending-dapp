@@ -60,7 +60,9 @@ npm run build
 
 2. Change network to: Localhost 8545
 
-3. Import address based on private key, using one of the keys generated initially by testrpc
+3. When you started testrpc, it should have printed out a list of available accounts and private keys. Copy one of the private keys.
+
+4. In meta mask, click the circular arrows, then "Import Account", then paste the private key. Now you can spend your test accounts ether.
 
 ## Browser solidity
 
@@ -103,5 +105,8 @@ Note: I've found Mist on testrpc to only be useful for reads - writes fail with 
 	truffle migrate --reset
 	```
 
-5. If you're getting javascript errors when interacting with you contracts, double check the 'abi' section of your contract json in /build/contracts. Sometimes truffle compile doesn't update these properly and you need to manually make the input/output arguements match what's actually in your solidity contracts. I've saved a backup of the abi in build/contracts/LoanContract.abi.bak, but this is really just a hack, I probably need to file an issue with truffle.
+5. If you're getting javascript errors when interacting with you contracts, double check the 'abi' section of your contract json in /build/contracts and compare to what the function actually looks like in Solidity. Sometimes truffle compile doesn't update these properly. If you delete all the files in build/contracts and then recompile everything it often fixes it.
+	```
+	npm run truffle migrate --reset --compile-all
+	```
 
