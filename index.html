@@ -3,9 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Lending dApp</title>
+    <!-- <link rel="stylesheet" href="./assets/styles.min.css"> -->
   </head>
   <body>
-    <div id="app"></div>
+    <div class="pageWrap">
+      <div class="top-nav" role="navigation">
+      	<div class="row header-row">
+      		<div class="small-3 large-2 xxlarge-2 columns header-column logo-area">
+      		</div>
+      		<div class="small-3 large-2 xxlarge-1 columns header-column">
+      			<a kvtrackevent="TopNav|click-Lend" data-dropdown="lend-dropdown" data-options="is_hover:true;hover_timeout:200;" aria-controls="lend-dropdown" aria-expanded="false" class="header-button" href="#/lend">Lend <svg class="icon"><use xlink:href="#icon-triangle"></use></svg></a>
+      		</div>
+        </div>
+      </div>
+
+
+      <div id="app"></div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>
