@@ -2,6 +2,8 @@
 
 ## Installation
 
+Initial scaffolding thanks to: https://github.com/wespr/truffle-vue
+
 1. Install [Truffle](http://truffleframework.com) and an Ethereum client - like [EthereumJS TestRPC](https://github.com/ethereumjs/testrpc). Note I couldn't get this to work on our VMs so I installed them directly on the Mac.
 	```
 	[sudo] npm install -g truffle // Version 3.0.5+ required.
@@ -31,7 +33,7 @@
 	```
     
 ## Tests
-This box comes with everything bundled for `unit`, `e2e` and `truffle` contracts testing.
+This box comes with everything bundled for `unit`, `e2e` and `truffle` contracts testing. The tests are incomplete at the moment.
 
 1. `unit` and `e2e` tests.
 	```
@@ -109,4 +111,4 @@ Note: I've found Mist on testrpc to only be useful for reads - writes fail with 
 	```
 	npm run truffle migrate --reset --compile-all
 	```
-
+6. Metamask issues: sometimes Metamask is unresponsive. I've found the best way is to disable, then re-enable metamask from the chrome extensions page.
