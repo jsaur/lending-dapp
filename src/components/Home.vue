@@ -8,6 +8,9 @@
     <div id="borrow-button">
       <router-link tag="button" to="/borrow">BORROW</router-link>
     </div>
+    <div id="converter">
+      <router-link tag="button" to="/converter">$ to ether </router-link>
+    </div>
 
   </div>
 </template>
