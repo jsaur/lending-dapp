@@ -22,8 +22,7 @@ contract LoanFactory {
     function create (
         uint _loanAmountInEthers,
         uint _repaymentDurationInDays,
-        string _name,
-        string _use
+        string _ipfsHash
     ) public returns(address _loanAddress) {
         address borrowerAddress = msg.sender;
         uint fundRaisingDurationInDays = 30; //default to 30 for now
@@ -32,8 +31,7 @@ contract LoanFactory {
             _loanAmountInEthers, 
             fundRaisingDurationInDays, 
             _repaymentDurationInDays,
-            _name,
-            _use
+            _ipfsHash
         );
         loans.push(newLoanContract);
         borrowers.push(borrowerAddress);

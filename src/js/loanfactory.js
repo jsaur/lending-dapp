@@ -1,5 +1,6 @@
 import contract from 'truffle-contract'
 import LoanFactoryContract from '@contracts/LoanFactory.json'
+import IpfsQueries from './ipfsQueries'
 
 const LoanFactory = {
 
@@ -66,7 +67,17 @@ const LoanFactory = {
     })
   },
 
-  create: function (loanAmountInEthers, repaymentDurationInDays, name, use) {
+  createIpfs: function (name, use) {
+    return new Promise((resolve, reject) => {
+      IpfsQueries.addNameUseHash(name, use).then(ipfsHash => {
+        resolve(ipfsHash)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+
+  createLoan: function (loanAmountInEthers, repaymentDurationInDays, name, use) {
     let self = this
 
     return new Promise((resolve, reject) => {
@@ -78,6 +89,19 @@ const LoanFactory = {
         {from: window.web3.eth.accounts[0]}
       ).then(tx => {
         resolve(tx)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+
+  create: function (loanAmountInEthers, repaymentDurationInDays, name, use) {
+    let self = this
+
+    return new Promise((resolve, reject) => {
+      self.createIpfs(name, use).then((file) => {
+        const ipfsHash = file[0].path
+        resolve(self.createLoan(loanAmountInEthers, repaymentDurationInDays, ipfsHash))
       }).catch(err => {
         reject(err)
       })
