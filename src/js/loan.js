@@ -1,5 +1,6 @@
 import contract from 'truffle-contract'
 import LoanContract from '@contracts/LoanContract.json'
+import IpfsQueries from './ipfsQueries'
 
 // This still isn't quite right, but I want a class not a const
 // to enable multiple loan contracts for each loan address
@@ -61,24 +62,31 @@ class Loan {
     })
   }
 
-  name () {
+  ipfsHash () {
     let self = this
 
     return new Promise((resolve, reject) => {
-      self.instance.name.call().then(name => {
-        resolve(name)
+      self.instance.ipfsHash.call().then(ipfsHash => {
+        resolve(ipfsHash)
       }).catch(err => {
         reject(err)
       })
     })
   }
 
-  use () {
+  parseIpfsInfo (ipfsInfo) {
+    const ipfsContent = ipfsInfo[0].content
+    return JSON.parse(ipfsContent)
+  }
+
+  ipfsInfo () {
     let self = this
 
     return new Promise((resolve, reject) => {
-      self.instance.use.call().then(use => {
-        resolve(use)
+      return self.ipfsHash().then((hash) => {
+        return IpfsQueries.getHash(hash).then(ipfsInfo => {
+          resolve(self.parseIpfsInfo(ipfsInfo))
+        })
       }).catch(err => {
         reject(err)
       })

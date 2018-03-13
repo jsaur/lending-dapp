@@ -87,11 +87,9 @@
         Loan.borrowerAddress().then(borrowerAddress => {
           this.borrowerAddress = borrowerAddress
         })
-        Loan.name().then(name => {
-          this.name = name
-        })
-        Loan.use().then(use => {
-          this.use = use
+        Loan.ipfsInfo().then(ipfsInfo => {
+          this.name = ipfsInfo.name
+          this.use = ipfsInfo.use
         })
         Loan.loanAmount().then(loanAmount => {
           this.loanAmount = loanAmount

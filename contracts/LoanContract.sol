@@ -9,8 +9,7 @@ contract LoanContract {
     uint public repaymentDuration;
     uint public fundRaisingDeadline;
     uint public repaymentDeadline;
-    string public name;
-    string public use;
+    string public ipfsHash;
     
     //Useful vars
     uint public amountRaised;
@@ -49,16 +48,14 @@ contract LoanContract {
         uint _loanAmountInEthers,
         uint _fundRaisingDurationInDays,
         uint _repaymentDurationInDays,
-        string _name,
-        string _use
+        string _ipfsHash
     ) public {
         borrowerAddress = _borrowerAddress;
         loanAmount = _loanAmountInEthers * 1 ether;
         repaymentDuration = _repaymentDurationInDays;
         fundRaisingDeadline = now + _fundRaisingDurationInDays * 1 days;
         repaymentDeadline = fundRaisingDeadline + _repaymentDurationInDays * 1 days;
-        name = _name;
-        use = _use;
+        ipfsHash = _ipfsHash;
         // For now just do a single scheduled payment at the end
         schedule.push(PaymentEntry(repaymentDeadline, loanAmount));
     }

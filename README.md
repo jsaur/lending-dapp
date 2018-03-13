@@ -4,21 +4,21 @@
 
 Initial scaffolding thanks to: https://github.com/wespr/truffle-vue
 
-1. Install [Truffle](http://truffleframework.com) and an Ethereum client - like [EthereumJS TestRPC](https://github.com/ethereumjs/testrpc). Note I couldn't get this to work on our VMs so I installed them directly on the Mac.
+1. Install [Truffle](http://truffleframework.com) and an Ethereum client - like [Ganache-cli](https://github.com/trufflesuite/ganache-cli).
 	```
 	[sudo] npm install -g truffle // Version 3.0.5+ required.
-	[sudo] npm install -g ethereumjs-testrpc
+	[sudo] npm install -g ganache-cli
 	```
 
-2. Pull down the repo and install dependancies
+2. Pull down the repo and install dependencies
 	```
 	git clone https://github.com/jsaur/lending-dapp
 	npm install
 	```
 
-3. Launch [`testrpc`](https://github.com/ethereumjs/testrpc) in it's own command prompt tab.
+3. Launch [`ganache-cli`](https://github.com/trufflesuite/ganache-cli) in its own command prompt tab. Default settings should work out of the box, no <options> args required
 	```
-	testrpc <options>
+	ganache-cli <options>
 	```
 
 4. Compile and migrate the contracts.
@@ -27,11 +27,29 @@ Initial scaffolding thanks to: https://github.com/wespr/truffle-vue
 	truffle migrate
 	``` 
 
-4. Run the webpack server for front-end hot reloading. Smart contract changes do not support hot reloading for now.
+5. Install [go-ipfs](https://dist.ipfs.io/#go-ipfs) and initialize by running
+  ```
+  sudo ./install.sh
+  ipfs init
+  ```
+6. You will need to allow cross-origin resource sharing (CORS) for the ipfs API
+to work. For local testing, add localhost:8080
+  ```
+  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"http://localhost:8080\"]"
+  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Credentials "[\"true\"]"
+  ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods "[\"PUT\", \"POST\", \"GET\"]"
+  ```
+
+7. Start the ipfs daemon in its own command prompt tab with
+  ```
+  ipfs daemon
+  ```
+
+8. Run the webpack server for front-end hot reloading. Smart contract changes do not support hot reloading for now.
 	```
 	npm run start
 	```
-    
+
 ## Tests
 This box comes with everything bundled for `unit`, `e2e` and `truffle` contracts testing. The tests are incomplete at the moment.
 
@@ -60,9 +78,9 @@ npm run build
 
 1. Install Metamask in your browser: https://metamask.io/
 
-2. Change network to: Localhost 8545
+2. Change network to: 127.0.0.1:8545
 
-3. When you started testrpc, it should have printed out a list of available accounts and private keys. Copy one of the private keys.
+3. When you started ganache-cli, it should have printed out a list of available accounts and private keys. Copy one of the private keys.
 
 4. In meta mask, click the circular arrows, then "Import Account", then paste the private key. Now you can spend your test accounts ether.
 
